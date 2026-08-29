@@ -1,0 +1,43 @@
+# Generated model weights / checkpoints / intermediate arrays
+data/
+__pycache__/
+
+# Generator binaries + per-run logs + service-side CSVs (the client *cli.csv ARE the dataset)
+vs_ip_gen/generate/signal_service
+vs_ip_gen/generate/signal_client
+vs_ip_gen/generate/*_svc.csv
+vs_ip_gen/generate/*.log
+
+# Backups and generated benchmark outputs (regenerate via run_all.sh)
+vs_ip_gen/generate_small_bak/
+vs_ip_gen/results/
+
+# Figure PDFs are regenerable from figures/plot_figures.py (keep the script, drop the PDFs)
+figures/*.pdf
+figures/_prev_*.png
+
+# Paper is a separate deliverable (submitted / on arXiv); not part of the dataset repo
+elsarticle/
+
+# LaTeX build artifacts (in case paper source is added elsewhere)
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.spl
+
+# Internal helper notes / previews
+_fill_guide.md
+
+# Reference papers we downloaded (not our content)
+1-s2.0-S1389128626004068-main.pdf
+sensors-23-04376.pdf
+someip.pdf
+systems-14-00196.pdf
+
+# Earlier sequential-model repo (third-party)
+supervised_detection_some_ip-main/
+
+# External reference / generated artifacts
+IEEE-Transactions-LaTeX2e-templates-and-instructions (2)/
+models/

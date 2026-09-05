@@ -5,8 +5,8 @@ __pycache__/
 # Generator binaries + per-run logs + service-side CSVs (the client *cli.csv ARE the dataset)
 vs_ip_gen/generate/signal_service
 vs_ip_gen/generate/signal_client
-vs_ip_gen/generate/*_svc.csv
-vs_ip_gen/generate/*.log
+*_svc.csv
+*.log
 
 # Backups and generated benchmark outputs (regenerate via run_all.sh)
 vs_ip_gen/generate_small_bak/

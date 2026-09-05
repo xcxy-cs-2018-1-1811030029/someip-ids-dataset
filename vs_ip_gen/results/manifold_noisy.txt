@@ -1,0 +1,18 @@
+gen=vs_ip_gen/generate/noisy/  messages=49402  positive=0.664
+train_pos=0.664  test_pos=0.664
+GBM            ROC=0.797 PR=0.880 MCC=0.424 P=0.770 R=0.907
+    ctx_tamper     rec=0.852
+    normal         rec=nan
+    tamper         rec=0.964
+semantic       ROC=0.689 PR=0.864 MCC=0.000 P=0.664 R=1.000
+    ctx_tamper     rec=1.000
+    normal         rec=nan
+    tamper         rec=1.000
+TCN            ROC=1.000 PR=1.000 MCC=1.000 P=1.000 R=1.000
+    ctx_tamper     rec=1.000
+    normal         rec=nan
+    tamper         rec=1.000
+GRU-mean       ROC=1.000 PR=1.000 MCC=1.000 P=1.000 R=1.000
+    ctx_tamper     rec=1.000
+    normal         rec=nan
+    tamper         rec=1.000

@@ -50,9 +50,11 @@ static double now_ts() {
 
 class service_sample {
 public:
-    service_sample(uint32_t _cycle, std::string _out, std::string _attack, float _intensity = 1.0f)
+    service_sample(uint32_t _cycle, std::string _out, std::string _attack, float _intensity = 1.0f,
+                   float _noise = 0.0f)
         : app_(vsomeip::runtime::get()->create_application()), is_registered_(false),
-          cycle_(_cycle), out_(_out), attack_(_attack), intensity_(_intensity), blocked_(false), running_(true),
+          cycle_(_cycle), out_(_out), attack_(_attack), intensity_(_intensity), noise_(_noise),
+          blocked_(false), running_(true),
           is_offered_(false),
           offer_thread_(std::bind(&service_sample::run, this)),
           notify_thread_(std::bind(&service_sample::notify, this)) {
@@ -128,6 +130,10 @@ public:
     void notify() {
         // realistic 12-byte payload: 3 little-endian floats (sensor signals)
         std::mt19937 rng(12345);
+        // sensor noise: separate RNG so attack branches that draw from `rng`
+        // (ctx_tamper, fuzz) stay bit-identical with or without --noise
+        std::mt19937 noise_rng(777);
+        std::normal_distribution<float> nz(0.0f, noise_);
         double val = 0.0;
         uint8_t base[12];
         while (running_) {
@@ -137,6 +143,11 @@ public:
                 float a = 100.0f + 50.0f * std::sin(static_cast<float>(val) * 0.1f);
                 float b = 50.0f + 30.0f * std::cos(static_cast<float>(val) * 0.2f);
                 float c = 20.0f + static_cast<float>((static_cast<int>(val)) % 100);
+                if (noise_ > 0.0f) {
+                    a += nz(noise_rng);
+                    b += nz(noise_rng);
+                    c += nz(noise_rng);
+                }
                 std::memcpy(base, &a, 4);
                 std::memcpy(base + 4, &b, 4);
                 std::memcpy(base + 8, &c, 4);
@@ -200,7 +211,7 @@ private:
     bool is_registered_;
     uint32_t cycle_;
     std::string out_, attack_;
-    float intensity_;
+    float intensity_, noise_;
     std::ofstream log_;
     std::mutex mutex_; std::condition_variable condition_; bool blocked_;
     bool running_;
@@ -212,6 +223,7 @@ private:
 int main(int argc, char** argv) {
     uint32_t cycle = 1000;
     float intensity = 1.0f;
+    float noise = 0.0f;
     std::string out = "svc.csv", attack = "normal";
     for (int i = 1; i < argc; i++) {
         std::string a(argv[i]);
@@ -219,14 +231,16 @@ int main(int argc, char** argv) {
         else if (a == "--out" && i + 1 < argc) { out = argv[++i]; }
         else if (a == "--attack" && i + 1 < argc) { attack = argv[++i]; }
         else if (a == "--intensity" && i + 1 < argc) { intensity = (float)atof(argv[++i]); }
+        else if (a == "--noise" && i + 1 < argc) { noise = (float)atof(argv[++i]); }
     }
     std::cout << "signal_service attack=" << attack << " cycle=" << cycle
-              << " intensity=" << intensity << " out=" << out << std::endl;
+              << " intensity=" << intensity << " noise=" << noise
+              << " out=" << out << std::endl;
 
 #ifndef VSOMEIP_ENABLE_SIGNAL_HANDLING
     std::signal(SIGINT, [](int){});
 #endif
-    service_sample its_sample(cycle, out, attack, intensity);
+    service_sample its_sample(cycle, out, attack, intensity, noise);
     if (its_sample.init()) {
         // simple signal handling: block SIGINT and run
         its_sample.start();

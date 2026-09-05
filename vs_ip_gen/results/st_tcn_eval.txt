@@ -1,0 +1,28 @@
+messages=189596  split=run  epochs=15  protocol=Table7(1%FPR global thr)
+train=126073  test=63523  test_pos=0.915
+timing channels: log1p(dt_ms), log1p(|dl|), burst (standardized on train)
+trained TCN  train_score_ok=126073
+trained GRU-mean  train_score_ok=126073
+trained ST-TCN  train_score_ok=126073
+
+FPR_TPR detector      ctx_tamper       dos      drop      fuzz    normal  slowslow    tamper
+FPR_TPR timing-only  |     0.030 |     0.994 |     0.995 |     0.032 |       nan |     1.000 |     0.033
+FPR_TPR byte-only    |     0.620 |     0.014 |     0.012 |     0.958 |       nan |     0.107 |     0.155
+FPR_TPR full-GBM     |     0.583 |     0.992 |     0.993 |     0.985 |       nan |     0.982 |     0.145
+FPR_TPR semantic     |     0.003 |     0.020 |     0.018 |     0.104 |       nan |     0.054 |     0.915
+FPR_TPR TCN          |     1.000 |     0.095 |     0.104 |     1.000 |       nan |     0.625 |     0.986
+FPR_TPR GRU-mean     |     0.999 |     0.014 |     0.023 |     1.000 |       nan |     0.196 |     0.986
+FPR_TPR ST-TCN       |     1.000 |     0.992 |     1.000 |     1.000 |       nan |     1.000 |     0.999
+
+overall (run split, same protocol)
+OVERALL TCN          ROC=0.846  PR=0.985
+OVERALL GRU-mean     ROC=0.824  PR=0.982
+OVERALL ST-TCN       ROC=0.999  PR=1.000
+
+===== CPU batch-1 latency (single thread, n=2000) =====
+LATENCY_TORCH TCN          med=  100.1 us  p95=  171.6 us  (9,992 pkt/s)
+LATENCY_TORCH GRU-mean     med= 1254.3 us  p95= 1542.3 us  (797 pkt/s)
+LATENCY_TORCH ST-TCN       med=  128.7 us  p95=  217.8 us  (7,773 pkt/s)
+LATENCY_ONNX TCN         med=   50.2 us  p95=  111.6 us  (19,902 pkt/s)
+LATENCY_ONNX GRU-mean    med=  187.8 us  p95=  371.4 us  (5,324 pkt/s)
+LATENCY_ONNX ST-TCN      med=   61.4 us  p95=  134.3 us  (16,276 pkt/s)

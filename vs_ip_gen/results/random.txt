@@ -1,0 +1,28 @@
+messages=189596  normal_payloads=16057  runs=3
+decoded=189596  positive=0.915
+
+===== SPLIT = random =====
+--- behavioral / semantic ---
+  GBM            P=0.930 R=0.990 F1=0.959  ROC=0.913 PR=0.991  MCC=0.324
+  RandomForest   P=0.923 R=0.996 F1=0.958  ROC=0.897 PR=0.990  MCC=0.246
+  Semantic      P=0.997 R=0.265 F1=0.419
+  Fused         P=0.929 R=0.992 F1=0.960
+--- deep sequence ---
+  GRU            P=0.915 R=1.000 F1=0.956  ROC=0.500 PR=0.915  MCC=0.000
+  TCN            P=0.915 R=1.000 F1=0.956  ROC=0.826 PR=0.983  MCC=0.000
+
+--- per-scenario recall (FUS / GBM / Sem / GRU / TCN) ---
+  ctx_tamper         n=14549  FUS=0.976  GBM=0.976  Sem=0.001  GRU=1.000  TCN=1.000
+  dos                n=17215  FUS=0.998  GBM=0.998  Sem=0.010  GRU=1.000  TCN=0.172
+  drop               n= 1498  FUS=1.000  GBM=1.000  Sem=0.009  GRU=1.000  TCN=0.178
+  fuzz               n= 4384  FUS=1.000  GBM=1.000  Sem=0.102  GRU=1.000  TCN=0.997
+  normal             n= 4817  FUS=nan  GBM=nan  Sem=nan  GRU=nan  TCN=nan
+  slowslow           n=   59  FUS=1.000  GBM=1.000  Sem=0.051  GRU=1.000  TCN=0.949
+  tamper             n=14357  FUS=0.999  GBM=0.992  Sem=0.916  GRU=1.000  TCN=0.986
+
+===== SIGNAL ISOLATION: fixed 1% FPR (TPR per attack, fair calibr.) =====
+  detector     | ctx_tamper | dos       | drop      | fuzz      | normal    | slowslow  | tamper   
+  timing-only  |     0.028 |     0.994 |     0.999 |     0.881 |       nan |     1.000 |     0.030
+  byte-only    |     0.622 |     0.013 |     0.016 |     0.956 |       nan |     0.102 |     0.166
+  full         |     0.591 |     0.992 |     0.990 |     0.987 |       nan |     0.983 |     0.151
+  TCN          |     1.000 |     0.114 |     0.154 |     1.000 |       nan |     0.797 |     0.991

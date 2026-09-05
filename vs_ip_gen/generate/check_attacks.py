@@ -8,7 +8,11 @@ Each attack has a DIFFERENT signature, so we check the right one per family:
   dos         -> packet RATE is far above normal (flood)
   drop        -> packet RATE far below normal / large inter-arrival gaps
   slowslow    -> very low rate (few messages over the run)
-  ctx_tamper  -> CROSS-SIGNAL correlation is destroyed (each signal stays in range)
+  ctx_tamper  -> CROSS-SIGNAL joint manifold is destroyed (each signal stays in range).
+                 Linear correlation cannot see this (sin/cos signals are already
+                 uncorrelated); we use MANIFOLD THICKNESS = mean within-bin std of
+                 signal-2 conditioned on signal-1. Thin curve (normal) -> small;
+                 independently filled region (ctx_tamper) -> large.
 
 Run:  python3 check_attacks.py [dir]
 """
@@ -32,6 +36,16 @@ def ent(b):
     c = c[c > 0]
     return float(-(c * np.log(c)).sum())
 
+def manifold_thickness(s1, s2, bins=24):
+    """Mean within-bin std of s2 conditioned on s1: thin curve -> small,
+    independently filled region -> large."""
+    order = np.argsort(s1)
+    s1s, s2s = s1[order], s2[order]
+    edges = np.linspace(s1s.min(), s1s.max(), bins + 1)
+    idx = np.digitize(s1s, edges) - 1
+    stds = [s2s[idx == b].std() for b in range(bins) if (idx == b).sum() >= 5]
+    return float(np.mean(stds)) if stds else float('nan')
+
 per = {}
 for path in sorted(glob.glob(os.path.join(GEN, "*_cli.csv"))):
     sc, it = parse_name(path)
@@ -54,7 +68,9 @@ ts = ref["ts"]; dur = float(ts.max() - ts.min()) if ts.size > 1 else 1.0
 ref_rate = ref["ts"].size / max(dur, 1e-6)
 ref_corr = float(np.corrcoef(ref["s1"], ref["s2"])[0, 1]) if ref["s1"].size > 3 else 0.0
 ref_ent = float(ref["ent"].mean())
-print(f"NORMAL REF: rate={ref_rate:.1f} msg/s  corr(s1,s2)={ref_corr:.3f}  ent={ref_ent:.3f}  max_s1={ref['s1'].max():.1f}\n")
+ref_thick = manifold_thickness(ref["s1"], ref["s2"])
+print(f"NORMAL REF: rate={ref_rate:.1f} msg/s  corr(s1,s2)={ref_corr:.3f}  ent={ref_ent:.3f}  "
+      f"max_s1={ref['s1'].max():.1f}  thickness={ref_thick:.3f}\n")
 
 def dt_stats(path):
     t = per[key]["ts"]
@@ -63,7 +79,8 @@ def dt_stats(path):
     return (float(np.median(d)) if d.size else float('nan'),
             float(d.max()) if d.size else float('nan'))
 
-print(f"{'scenario':12s} {'int':5s} {'rate':8s} {'med_dt':8s} {'max_s1':8s} {'<12':5s} {'ent_d':7s} {'corr':7s}  verdict")
+print(f"{'scenario':12s} {'int':5s} {'rate':8s} {'med_dt':8s} {'max_s1':8s} {'<12':5s} {'ent_d':7s} "
+      f"{'corr':7s} {'thick':7s}  verdict")
 for key in sorted(per):
     d = per[key]
     if key[0] == "normal": continue
@@ -77,6 +94,7 @@ for key in sorted(per):
     frac_short = float((d["lens"] < 12).mean()) if d["lens"].size else 0.0
     ent_d = float(d["ent"].mean() - ref_ent) if d["ent"].size else 0.0
     corr = float(np.corrcoef(d["s1"], d["s2"])[0, 1]) if d["s1"].size > 3 else float('nan')
+    thick = manifold_thickness(d["s1"], d["s2"]) if d["s1"].size > 10 else float('nan')
 
     sc = key[0]
     if sc == "tamper":   verdict = "yes" if s1max > 165 else "NO"
@@ -84,8 +102,9 @@ for key in sorted(per):
     elif sc == "dos":    verdict = "yes" if rate > 2 * ref_rate else "NO"
     elif sc == "drop":   verdict = "yes" if rate < 0.5 * ref_rate else "NO"
     elif sc == "slowslow": verdict = "yes" if rate < 0.5 * ref_rate else "NO"
-    elif sc == "ctx_tamper": verdict = "yes" if (not np.isnan(corr)) and abs(corr - ref_corr) > 0.15 else "NO"
+    elif sc == "ctx_tamper": verdict = "yes" if (not np.isnan(thick)) and thick > max(2.5 * ref_thick, 8.0) else "NO"
     else: verdict = "?"
 
     print(f"{sc:12s} {key[1]:5.1f} {rate:8.2f} {med_dt:8.4f} {s1max:8.2f} {frac_short:5.2f} {ent_d:+7.3f} "
-          f"{corr if not np.isnan(corr) else float('nan'):7.3f}  {verdict}")
+          f"{corr if not np.isnan(corr) else float('nan'):7.3f} "
+          f"{thick if not np.isnan(thick) else float('nan'):7.3f}  {verdict}")

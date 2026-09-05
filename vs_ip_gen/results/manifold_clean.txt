@@ -1,0 +1,18 @@
+gen=vs_ip_gen/generate/clean_ctrl/  messages=48023  positive=0.666
+train_pos=0.666  test_pos=0.666
+GBM            ROC=0.853 PR=0.927 MCC=0.488 P=0.800 R=0.896
+    ctx_tamper     rec=0.869
+    normal         rec=nan
+    tamper         rec=0.924
+semantic       ROC=0.689 PR=0.865 MCC=0.000 P=0.666 R=1.000
+    ctx_tamper     rec=1.000
+    normal         rec=nan
+    tamper         rec=1.000
+TCN            ROC=1.000 PR=1.000 MCC=1.000 P=1.000 R=1.000
+    ctx_tamper     rec=1.000
+    normal         rec=nan
+    tamper         rec=1.000
+GRU-mean       ROC=1.000 PR=1.000 MCC=1.000 P=1.000 R=1.000
+    ctx_tamper     rec=1.000
+    normal         rec=nan
+    tamper         rec=1.000

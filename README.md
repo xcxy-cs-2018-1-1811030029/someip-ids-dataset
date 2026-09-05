@@ -72,6 +72,27 @@ Reports overall + per-attack metrics for GBM, RandomForest, semantic-validity, G
 detector under each split. `--fpr-eval` adds the fixed-1%-FPR signal-isolation analysis and `--diagnose`
 adds the timing-only / byte-only / protocol-only feature-family ablation.
 
+## Review-Round Experiments
+
+Additional experiments addressing reviewer comments live in `someip_ids/`; their outputs are committed in
+`vs_ip_gen/results/` so the numbers can be inspected without re-running:
+
+| Script | Experiment | Output |
+|---|---|---|
+| `st_tcn_eval.py` | ST-TCN input-level spatio-temporal fusion vs. TCN/timing-only at a global 1% FPR, torch + ONNX latency | `st_tcn_eval.txt` |
+| `external_baselines.py` | Reimplementations of Heo et al. (IEICE 2022) and Kim et al. (Systems 2026) under the unified protocol | `external_baselines.txt` |
+| `gru_mean_eval.py` | Mean-pooled-readout GRU (fixes the last-state collapse) under random/temporal/run splits | `gru_mean_eval.txt` |
+| `diag_gru.py` | Collapse diagnosis (synthetic separable control + balanced subsamples) | stdout |
+| `balanced_ablation.py` | ROC-AUC vs. training attack prevalence (random + run splits) | `balanced_ablation.txt`, `balanced_ablation_run.txt` |
+| `intensity_invariance.py` | Per-feature KS distance + detector AUC across intensities | `intensity_invariance.txt` |
+| `latency.py` | Fair single-thread CPU batch-1 latency of pipeline components and deep models | `latency.txt` |
+| `measure_jitter.py` | Measured campus-network path RTT / jitter | `jitter_rtt_gateway.txt`, `jitter_rtt_external.txt` |
+| `jitter_robustness.py` | Detector robustness under injected jitter (five levels) | `jitter_robustness.txt` |
+| `manifold_noise_eval.py` | Noisy-manifold A/B study using `generate/noisy/` and `generate/clean_ctrl/` | `manifold_noisy.txt`, `manifold_clean.txt` |
+
+Figure scripts: `figures/plot_figures.py` (paper figures, regenerable) and `figures/plot_new_experiments.py`
+(review-round figures). The committed results mirror the tables and figures in the manuscript.
+
 ## Companion Manuscript
 
 The accompanying paper is a separate submission and is not bundled in this repository; the dataset, generator,

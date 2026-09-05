@@ -1,0 +1,5 @@
+split model train_prev ROC PR MCC posrate prec rec
+run GRU orig 0.915 0.500 0.915 0.000 1.000 0.915 1.000
+run TCN orig 0.915 0.863 0.987 0.000 1.000 0.915 1.000
+run GRU 0.1 0.100 0.500 0.915 0.000 1.000 0.915 1.000
+run TCN 0.1 0.100 0.818 0.982 0.000 1.000 0.915 1.000

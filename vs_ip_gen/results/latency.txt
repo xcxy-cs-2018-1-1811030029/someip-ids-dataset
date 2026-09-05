@@ -1,0 +1,8 @@
+training GBM (300 trees) for the timing harness ...
+
+===== per-packet latency (CPU, single thread, batch-1, n=2000) =====
+behavioral features:  med=   14.6 us  p95=   20.4 us  (68,662 pkt/s)
+GBM (feat+300 trees): med=  187.4 us  p95=  279.9 us  (5,335 pkt/s)
+semantic decode+sc : med=    4.7 us  p95=    5.5 us  (212,089 pkt/s)
+GRU batch-1 CPU     : med= 1301.1 us  p95= 1623.3 us  (769 pkt/s)
+TCN batch-1 CPU     : med=  101.4 us  p95=  165.2 us  (9,859 pkt/s)

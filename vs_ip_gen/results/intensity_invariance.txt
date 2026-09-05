@@ -1,0 +1,27 @@
+messages=189596  positive=0.915
+
+===== (1) DATA-LEVEL: KS distance i0.3 vs i1.0 (0 = identical, 1 = disjoint) =====
+scenario           dt_KS  mean_KS entropy_KS  plen_KS  med_dt_i0.3 med_dt_i1.0  design
+ctx_tamper         0.019    0.000      0.000    0.000       0.0106      0.0106  intensity INERT
+dos                0.994    0.018      0.013    0.000       0.0075      0.0014  intensity ACTIVE
+drop               0.065    0.001      0.000    0.000       0.0510      0.0510  intensity INERT
+fuzz               0.055    0.143      0.675    0.679       0.0106      0.0106  intensity ACTIVE
+slowslow           0.835    0.309      0.105    0.000       6.7517      2.0008  intensity ACTIVE
+tamper             0.092    0.175      0.007    0.000       0.0106      0.0107  intensity ACTIVE
+
+===== (2) DETECTOR-LEVEL: GBM per-(scenario, intensity) on fixed random split =====
+     cells: AUC vs shared normal reference + TPR at global threshold + median score
+scenario          AUC@0.3  AUC@0.7  AUC@1.0   TPR@0.3  TPR@0.7  TPR@1.0  trend
+ctx_tamper          0.867    0.864    0.863     0.979    0.975    0.974  FLAT (by design)
+dos                 0.976    0.997    0.999     0.985    0.999    1.000  monotone
+drop                0.996    0.998    0.996     1.000    1.000    1.000  FLAT (by design)
+fuzz                1.000    0.996    0.998     1.000    1.000    1.000  ceiling (saturated)
+slowslow            0.999    0.999    0.998     1.000    1.000    1.000  ceiling (saturated)
+tamper              0.788    0.844    0.846     0.991    0.993    0.992  monotone
+
+Reading: scenarios marked 'intensity INERT' do not vary their behavior with the
+severity knob (signal_service.cpp ignores --intensity in the drop/ctx_tamper
+branches). FLAT detector rows there are the EXPECTED positive control: the
+evaluation pipeline does not hallucinate severity trends where the data does not
+vary. 'monotone'/'rising' rows show the severity analysis resolves real data
+variation; 'ceiling' rows are saturated at all severities (still no hallucination).

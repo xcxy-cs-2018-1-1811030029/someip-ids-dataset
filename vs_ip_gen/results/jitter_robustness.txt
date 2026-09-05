@@ -1,0 +1,28 @@
+messages=189596  positive=0.915
+Detectors: timing-only GBM[dt,burst] | byte-only GBM[ent,mean,std] | full GBM[all]
+level          eps_med   eps_std |  timing ROC  timing PR  timing MCC |  byte ROC  byte MCC |  full ROC   full PR  full MCC
+baseline          0.0u      0.0u |       0.698      0.965       0.184 |     0.730     0.000 |     0.913     0.991     0.324
+switch100M        8.5u      2.0u |       0.700      0.965       0.184 |     0.730     0.000 |     0.913     0.991     0.335
+loaded1G         84.8u     49.9u |       0.694      0.965       0.183 |     0.730     0.000 |     0.912     0.991     0.323
+contended       848.1u    499.2u |       0.690      0.964       0.169 |     0.730     0.000 |     0.909     0.991     0.269
+measured       1535.0u    567.7u |       0.691      0.964       0.170 |     0.730     0.000 |     0.907     0.991     0.307
+
+--- per-scenario recall at global train threshold (timing-only) ---
+level        ctx_tamper      dos     drop     fuzz   normal slowslow   tamper
+baseline        0.998    0.998    0.999    0.999      nan    1.000    0.998
+switch100M      0.997    0.998    0.999    0.999      nan    1.000    0.997
+loaded1G        0.998    0.998    0.999    0.999      nan    1.000    0.998
+contended       0.996    0.996    0.999    0.997      nan    1.000    0.995
+measured        0.997    0.996    0.999    0.999      nan    1.000    0.997
+
+--- per-scenario recall at global train threshold (full GBM) ---
+level        ctx_tamper      dos     drop     fuzz   normal slowslow   tamper
+baseline        0.976    0.998    1.000    1.000      nan    1.000    0.992
+switch100M      0.976    0.998    1.000    1.000      nan    1.000    0.992
+loaded1G        0.978    0.998    1.000    1.000      nan    1.000    0.993
+contended       0.985    0.996    1.000    1.000      nan    1.000    0.994
+measured        0.983    0.996    1.000    1.000      nan    1.000    0.995
+
+semantic (payload-only, jitter-immune): P=0.997 R=0.265 (unchanged across levels by construction)
+
+saved -> vs_ip_gen/results/jitter_robustness.txt

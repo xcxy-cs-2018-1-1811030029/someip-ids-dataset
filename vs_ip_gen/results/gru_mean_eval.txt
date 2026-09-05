@@ -1,0 +1,34 @@
+messages=189596  overall_positive=0.915
+
+===== split=random  train_pos=0.915 test_pos=0.915 =====
+GRU-mean-pooled  ROC=0.811 PR=0.981 MCC=0.000  posrate=1.000  (5 min)
+  per-scenario recall:
+    ctx_tamper       rec=1.000
+    dos              rec=1.000
+    drop             rec=1.000
+    fuzz             rec=1.000
+    normal           rec=nan
+    slowslow         rec=1.000
+    tamper           rec=1.000
+
+===== split=temporal  train_pos=0.915 test_pos=0.915 =====
+GRU-mean-pooled  ROC=0.721 PR=0.971 MCC=0.029  posrate=1.000  (6 min)
+  per-scenario recall:
+    ctx_tamper       rec=1.000
+    dos              rec=1.000
+    drop             rec=1.000
+    fuzz             rec=1.000
+    normal           rec=nan
+    slowslow         rec=1.000
+    tamper           rec=1.000
+
+===== split=run  train_pos=0.915 test_pos=0.915 =====
+GRU-mean-pooled  ROC=0.832 PR=0.983 MCC=0.000  posrate=1.000  (4 min)
+  per-scenario recall:
+    ctx_tamper       rec=1.000
+    dos              rec=1.000
+    drop             rec=1.000
+    fuzz             rec=1.000
+    normal           rec=nan
+    slowslow         rec=1.000
+    tamper           rec=1.000

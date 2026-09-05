@@ -1,0 +1,8 @@
+messages=189596  split=run  protocol=Table7(1%FPR global thr)
+train=126073  test=63523  test_pos=0.915
+Heo2022 RF (hdr+tim)   ROC=0.698 PR=0.962 MCC=0.000 P=0.915 R=1.000 F1=0.956
+Kim2026 XGB (behav.)   ROC=0.908 PR=0.991 MCC=0.252 P=0.925 R=0.991 F1=0.957
+
+FPR_TPR detector      ctx_tamper       dos      drop      fuzz    normal  slowslow    tamper
+FPR_TPR Heo2022-RF   |     0.184 |     0.994 |     0.998 |     0.998 |       nan |     1.000 |     0.186
+FPR_TPR Kim2026-XGB  |     0.599 |     0.988 |     0.951 |     0.993 |       nan |     0.929 |     0.126

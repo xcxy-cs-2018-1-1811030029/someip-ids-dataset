@@ -10,7 +10,7 @@ vs_ip_gen/generate/*.log
 
 # Backups and generated benchmark outputs (regenerate via run_all.sh)
 vs_ip_gen/generate_small_bak/
-vs_ip_gen/results/
+# NOTE: vs_ip_gen/results/ is COMMITTED so reviewers can inspect numbers without re-running
 
 # Figure PDFs are regenerable from figures/plot_figures.py (keep the script, drop the PDFs)
 figures/*.pdf
